@@ -2,6 +2,7 @@ import {StatusBar} from 'expo-status-bar'
 import React from 'react'
 import {StyleSheet, Text, View, TouchableOpacity, Alert, ImageBackground, Image} from 'react-native'
 import {Camera} from 'expo-camera'
+import * as MediaLibrary from 'expo-media-library';
 let camera: Camera
 export default function App() {
   const [startCamera, setStartCamera] = React.useState(false)
@@ -22,6 +23,14 @@ export default function App() {
     setPreviewVisible(true)
     setCapturedImage(photo)
   }
+  const savePhoto = () => {
+    MediaLibrary.saveToLibraryAsync(capturedImage.uri);
+  }
+  const retakePicture = () => {
+    setCapturedImage(null)
+    setPreviewVisible(false)
+    startCameraFunc()
+  }
   
   
   return (
@@ -34,7 +43,7 @@ export default function App() {
           }}
         >
           {previewVisible && capturedImage ? (
-            <CameraPreview photo={capturedImage} />
+            <CameraPreview photo={capturedImage} savePhoto={savePhoto} retakePicture={retakePicture} />
           ) : (
             <Camera
               type={cameraType}
@@ -174,6 +183,44 @@ const CameraPreview = ({photo, retakePicture, savePhoto}: any) => {
               justifyContent: 'space-between'
             }}
           >
+            <TouchableOpacity
+              onPress={retakePicture}
+              style={{
+                width: 130,
+                height: 40,
+
+                alignItems: 'center',
+                borderRadius: 4
+              }}
+            >
+              <Text
+                style={{
+                  color: '#fff',
+                  fontSize: 20
+                }}
+              >
+                Re-take
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={savePhoto}
+              style={{
+                width: 130,
+                height: 40,
+
+                alignItems: 'center',
+                borderRadius: 4
+              }}
+            >
+              <Text
+                style={{
+                  color: '#fff',
+                  fontSize: 20
+                }}
+              >
+                save photo
+              </Text>
+            </TouchableOpacity>
           </View>
         </View>
       </ImageBackground>
